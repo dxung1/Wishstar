@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#17132f">
-<title>별을 띄우는 밤</title>
+<title>별에게 속삭여</title>
 
 <style>
 *{box-sizing:border-box}
@@ -65,7 +65,7 @@ main{width:min(650px,100%);margin:auto;padding:10px 17px 55px}
 .sky-legend{display:flex;justify-content:center;gap:17px;color:#d6c9e7;font-size:11px;margin:14px 0}
 .legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
 .sky-note{color:#c5badc;font-size:11px;text-align:center;line-height:1.8;margin-top:13px}
-.write-modal,.note-modal{display:none;position:fixed;inset:0;z-index:110;background:#090719c9;backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:18px}
+.write-modal,.note-modal{display:none;position:fixed;inset:0;z-index:110;background:#090719c9;backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:18px;overflow-y:auto}
 .write-modal.show,.note-modal.show{display:flex}
 .write-box{width:100%;max-width:430px;background:linear-gradient(145deg,#30264e,#252b4e);border:1px solid #ffffff30;border-radius:23px;padding:23px}
 .write-box h2{text-align:center;color:#ffe8f4;font-size:20px;margin:4px 0 19px}
@@ -80,7 +80,7 @@ textarea{display:block;width:100%;height:145px;resize:vertical;border:1px solid 
 .modal-buttons button{flex:1;border:0;border-radius:12px;padding:13px;font-size:13px}
 .cancel{background:#ffffff19;color:white}
 .send{background:linear-gradient(100deg,#f4c9df,#cbbcf4);color:#302343;font-weight:bold}
-.note-paper{position:relative;width:100%;max-width:400px;min-height:245px;background:#fff;color:#33313a;border:1px solid #d9d9dc;box-shadow:0 15px 55px #0007;padding:27px 24px 23px;transform:rotate(-.5deg);animation:paperOpen .35s ease}
+.note-paper{position:relative;width:100%;max-width:430px;max-height:85vh;overflow-y:auto;background:#fff;color:#33313a;border:1px solid #d9d9dc;box-shadow:0 15px 55px #0007;padding:27px 24px 23px;transform:rotate(-.5deg);animation:paperOpen .35s ease}
 @keyframes paperOpen{from{opacity:0;transform:scale(.92) rotate(-2deg)}to{opacity:1;transform:scale(1) rotate(-.5deg)}}
 .note-paper:before{content:"";position:absolute;top:0;left:0;height:4px;width:100%;background:#d8c8ef}
 .note-label{font-size:11px;color:#89828f;margin-bottom:17px}
@@ -89,6 +89,17 @@ textarea{display:block;width:100%;height:145px;resize:vertical;border:1px solid 
 .note-content{font-size:14px;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere;color:#48434c;min-height:65px}
 .note-bottom{border-top:1px solid #e8e5eb;margin-top:22px;padding-top:12px;display:flex;justify-content:space-between;color:#8b8490;font-size:10px}
 .note-close{display:block;margin:17px auto 0;border:1px solid #ffffff55;background:#ffffff15;color:white;border-radius:20px;padding:10px 24px;font-size:12px}
+.reply-section{margin-top:20px;padding-top:17px;border-top:1px solid #e8e5eb}
+.reply-heading{font-size:14px;color:#554765;font-weight:bold;margin-bottom:12px}
+.reply-list{display:grid;gap:9px}
+.reply-item{background:#f5f0f8;border-radius:12px;padding:11px}
+.reply-name{font-size:11px;color:#8a729b;margin-bottom:5px}
+.reply-message{font-size:13px;line-height:1.7;color:#48434c;white-space:pre-wrap;overflow-wrap:anywhere}
+.no-replies{font-size:12px;color:#9991a0;padding:8px 0}
+.reply-form{margin-top:15px;display:grid;gap:8px}
+.reply-form input,.reply-form textarea{width:100%;border:1px solid #ded6e5;border-radius:10px;padding:11px;background:#fff;color:#40394b;font:inherit;font-size:13px;outline:none}
+.reply-form textarea{height:85px;resize:vertical}
+.reply-send{border:0;border-radius:10px;padding:12px;background:linear-gradient(100deg,#e9c9df,#d4c6f2);color:#40334e;font-weight:bold}
 .toast{position:fixed;z-index:150;bottom:25px;left:50%;transform:translate(-50%,20px);background:#f3dff1;color:#302343;padding:12px 19px;border-radius:25px;font-size:12px;opacity:0;pointer-events:none;transition:.3s;white-space:nowrap}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .flying-star{position:fixed;z-index:120;width:25px;height:25px;color:#fff0ae;pointer-events:none;animation:fly 2.2s ease-in forwards}
@@ -104,7 +115,7 @@ footer{text-align:center;color:#a9a0c7;font-size:11px;line-height:1.8;padding:15
 
 <header>
 <div class="moon"></div>
-<h1>별을 띄우는 밤</h1>
+<h1>별에게 속삭여</h1>
 <div class="subtitle">마음속에 담아둔 이야기를 별에 적어 보내요.<br>오늘 밤도 당신의 별이 빛나기를.</div>
 </header>
 
@@ -112,7 +123,7 @@ footer{text-align:center;color:#a9a0c7;font-size:11px;line-height:1.8;padding:15
 <nav class="tabs">
 <button class="tab active" onclick="changeTab('private',this)">나만의 별</button>
 <button class="tab" onclick="changeTab('public',this)">함께하는 별</button>
-<button class="tab" onclick="changeTab('sky',this)">별이 머무는 하늘</button>
+<button class="tab" onclick="changeTab('sky',this)">별빛 아래 소원</button>
 </nav>
 
 <section id="private" class="panel active">
@@ -128,7 +139,7 @@ footer{text-align:center;color:#a9a0c7;font-size:11px;line-height:1.8;padding:15
 </section>
 
 <section id="sky" class="panel">
-<div class="intro"><h2>별이 머무는 하늘</h2><p>당신이 띄운 별들이 이곳에 머물고 있어요.<br>별 하나를 눌러 그 안의 이야기를 읽어보세요.</p></div>
+<div class="intro"><h2>별빛 아래 소원</h2><p>당신이 띄운 별들이 이곳에 머물고 있어요.<br>별 하나를 눌러 그 안의 이야기를 읽어보세요.</p></div>
 <div class="sky-filter">
 <button class="filter-btn active" onclick="setFilter('all',this)">모든 별</button>
 <button class="filter-btn" onclick="setFilter('private',this)">나만의 별</button>
@@ -176,6 +187,16 @@ footer{text-align:center;color:#a9a0c7;font-size:11px;line-height:1.8;padding:15
 <div class="note-author" id="noteAuthor">익명</div>
 <div class="note-content" id="noteContent"></div>
 <div class="note-bottom"><span id="noteDate"></span><span id="noteType"></span></div>
+
+<div class="reply-section" id="replySection" style="display:none">
+<div class="reply-heading">이 별에 도착한 따뜻한 말</div>
+<div class="reply-list" id="noteReplies"></div>
+<div class="reply-form">
+<input id="replyName" type="text" maxlength="20" placeholder="이름 (선택, 비우면 익명)">
+<textarea id="replyMessage" maxlength="150" placeholder="별에게 따뜻한 위로를 남겨주세요."></textarea>
+<button class="reply-send" id="replySendBtn" onclick="sendNoteReply()">위로 보내기</button>
+</div>
+</div>
 </div>
 <button class="note-close" onclick="closeNote()">닫기</button>
 </div>
@@ -183,7 +204,6 @@ footer{text-align:center;color:#a9a0c7;font-size:11px;line-height:1.8;padding:15
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase 라이브러리는 반드시 별도 script 태그로 불러오기 -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -205,6 +225,7 @@ let currentFilter = "all";
 let toastTimer;
 let publicStarsCache = [];
 let authReady = false;
+let openedPublicStarId = null;
 
 const $ = id => document.getElementById(id);
 
@@ -284,7 +305,10 @@ try {
     throw new Error("Firebase 라이브러리를 불러오지 못했어요.");
   }
 
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
   db = firebase.firestore();
 
   firebase.auth().signInAnonymously().catch(error => {
@@ -294,7 +318,6 @@ try {
 
   firebase.auth().onAuthStateChanged(user => {
     if (!user) return;
-
     authReady = true;
 
     db.collection("publicStars").onSnapshot(snapshot => {
@@ -310,6 +333,13 @@ try {
       });
 
       render();
+
+      if (openedPublicStarId) {
+        const item = findStar("public", openedPublicStarId);
+        if (item && $("noteModal").classList.contains("show")) {
+          renderNoteReplies(item);
+        }
+      }
     }, error => {
       console.error("공개 별 불러오기 오류:", error);
       showToast("공개 별을 불러오지 못했어요.");
@@ -444,17 +474,7 @@ function renderPublic() {
       <div class="card-text">${escapeHTML(item.message)}</div>
       <div class="card-actions">
         <button class="small-btn" onclick="heartStar('${escapeHTML(item.id)}')">위로 보내기 · ${Number(item.hearts) || 0}</button>
-        <button class="small-btn" onclick="toggleReply('${escapeHTML(item.id)}')">위로 남기기</button>
-        <button class="small-btn" onclick="openNote('public','${escapeHTML(item.id)}')">쪽지 보기</button>
-      </div>
-      <div id="replies-${escapeHTML(item.id)}" style="display:none;margin-top:12px">
-        ${(item.replies || []).map(r => `
-          <div style="font-size:12px;color:#e5d9ef;padding:6px 0;border-bottom:1px solid #ffffff18">${escapeHTML(r)}</div>
-        `).join("")}
-        <div style="display:flex;gap:7px;margin-top:9px">
-          <input id="input-${escapeHTML(item.id)}" maxlength="150" placeholder="따뜻한 말을 남겨주세요" style="min-width:0;flex:1;border:1px solid #ffffff30;border-radius:12px;padding:10px;background:#17182f;color:white">
-          <button class="small-btn" onclick="addReply('${escapeHTML(item.id)}')">보내기</button>
-        </div>
+        <button class="small-btn" onclick="openNote('public','${escapeHTML(item.id)}')">쪽지 보기 · 위로 남기기</button>
       </div>
     </article>
   `).join("") : `<div class="empty">아직 이곳에 별이 없어요.<br>첫 번째 별을 띄워주세요.</div>`;
@@ -530,6 +550,8 @@ function openNote(mode, id) {
   const item = findStar(mode, id);
   if (!item) return;
 
+  openedPublicStarId = mode === "public" ? id : null;
+
   $("noteLabel").textContent = mode === "private" ? "MY LITTLE STAR" : "A STAR FOR EVERYONE";
   $("noteTitle").textContent =
     item.kind === "소원" ? "나의 작은 소원" :
@@ -540,11 +562,77 @@ function openNote(mode, id) {
   $("noteContent").textContent = item.message;
   $("noteDate").textContent = item.date;
   $("noteType").textContent = item.kind;
+
+  $("replySection").style.display = mode === "public" ? "block" : "none";
+  $("replyName").value = "";
+  $("replyMessage").value = "";
+
+  if (mode === "public") renderNoteReplies(item);
+
   $("noteModal").classList.add("show");
+}
+
+/* 쪽지 안의 위로 목록 */
+function renderNoteReplies(item) {
+  const replies = Array.isArray(item.replies) ? item.replies : [];
+
+  $("noteReplies").innerHTML = replies.length ? replies.map(reply => {
+    const name = typeof reply === "string" ? "익명" : (reply.name || "익명");
+    const message = typeof reply === "string" ? reply : (reply.message || "");
+
+    return `
+      <div class="reply-item">
+        <div class="reply-name">${escapeHTML(name)}</div>
+        <div class="reply-message">${escapeHTML(message)}</div>
+      </div>
+    `;
+  }).join("") : `<div class="no-replies">아직 도착한 위로가 없어요.<br>첫 번째 따뜻한 말을 남겨주세요.</div>`;
+}
+
+/* 쪽지에서 위로 보내기 */
+async function sendNoteReply() {
+  if (!openedPublicStarId) return;
+
+  const message = $("replyMessage").value.trim();
+  const name = $("replyName").value.trim() || "익명";
+
+  if (!message) {
+    showToast("위로의 말을 적어주세요.");
+    return;
+  }
+
+  if (!db || !authReady) {
+    showToast("서버 연결 중이에요. 잠시 기다려주세요.");
+    return;
+  }
+
+  const button = $("replySendBtn");
+  button.disabled = true;
+  button.textContent = "보내는 중...";
+
+  try {
+    await db.collection("publicStars").doc(openedPublicStarId).update({
+      replies: firebase.firestore.FieldValue.arrayUnion({
+        name: name,
+        message: message
+      })
+    });
+
+    $("replyName").value = "";
+    $("replyMessage").value = "";
+    showToast("따뜻한 위로가 도착했어요.");
+  } catch (error) {
+    console.error("위로 저장 오류:", error);
+    showToast("위로를 보내지 못했어요. 다시 시도해 주세요.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "위로 보내기";
+  }
 }
 
 function closeNote() {
   $("noteModal").classList.remove("show");
+  openedPublicStarId = null;
 }
 
 function closeNoteOutside(event) {
@@ -578,40 +666,6 @@ async function heartStar(id) {
   } catch (error) {
     console.error("하트 오류:", error);
     showToast("마음을 보내지 못했어요.");
-  }
-}
-
-/* 답글 창 */
-function toggleReply(id) {
-  const area = $("replies-" + id);
-  if (area) area.style.display = area.style.display === "none" ? "block" : "none";
-}
-
-/* 답글 보내기 */
-async function addReply(id) {
-  const input = $("input-" + id);
-  if (!input) return;
-
-  const message = input.value.trim();
-
-  if (!message) {
-    showToast("위로의 말을 적어주세요.");
-    return;
-  }
-
-  if (!db || !authReady) {
-    showToast("잠시만 기다려주세요.");
-    return;
-  }
-
-  try {
-    await db.collection("publicStars").doc(id).update({
-      replies: firebase.firestore.FieldValue.arrayUnion(message)
-    });
-    showToast("따뜻한 위로가 도착했어요.");
-  } catch (error) {
-    console.error("답글 오류:", error);
-    showToast("답글을 보내지 못했어요.");
   }
 }
 
